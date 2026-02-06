@@ -1,3 +1,12 @@
+from enum import Enum
+
+
+class LetterStatus(Enum):
+    CORRECT = "correct"
+    PRESENT = "present"
+    ABSENT = "absent"
+    UNKNOWN = "unknown"
+
 
 class WordleGame:
     def __init__(self, target_word, valid_words, max_attempts):
@@ -24,19 +33,27 @@ class WordleGame:
         result = []
         target_letters = list(self.target_word)
 
-        for i in range(len(guess)):
-            if self.target_word[i] == guess[i]:
-                result.append()
+        for i, letter in enumerate(guess):
+            if letter == self.target_word[i]:
+                result.append({
+                    'letter': letter,
+                    'status': LetterStatus.CORRECT
+                })
                 target_letters[i] = None
             else:
-                result.append()
+                result.append({
+                    'letter': letter,
+                    'status': LetterStatus.UNKNOWN
+                })
         
-        for i in range(len(guess)):
-            if guess[i] in self.target_word:
-                result.append()
-                target_letters[i] = None
-            else:
-                result.append()
+        for i, item in enumerate(result):
+            if item['status'] is LetterStatus.UNKNOWN:
+                letter = item['letter']
+                if letter in target_letters:
+                    item['status'] = LetterStatus.PRESENT
+                    target_letters[target_letters.index(letter)] = None
+                else:
+                    item['status'] = LetterStatus.ABSENT
 
         return result
     
