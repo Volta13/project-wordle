@@ -1,6 +1,5 @@
 from enum import Enum
 
-
 class LetterStatus(Enum):
     CORRECT = "correct"
     PRESENT = "present"
@@ -11,14 +10,14 @@ class LetterStatus(Enum):
 class WordleGame:
     def __init__(self, target_word, valid_words, max_attempts):
         self.target_word = target_word
-        self.valid_words = valid_words
+        self.valid_words = [word.upper() for word in valid_words]
         self.max_attemps = max_attempts
         self.attempted_words = []
         self.attempts_count = 0
         self.game_won = False
 
     def is_valid_word(self, word):
-        return word in self.valid_words
+        return word.upper() in self.valid_words 
     
     def is_victory(self):
         return self.game_won
@@ -32,6 +31,7 @@ class WordleGame:
     def check_guess(self, guess):
         result = []
         target_letters = list(self.target_word)
+        guess = guess.upper()
 
         for i, letter in enumerate(guess):
             if letter == self.target_word[i]:
@@ -58,4 +58,12 @@ class WordleGame:
         return result
     
     def make_a_guess(self, guess):
-        ...
+        result = self.check_guess(guess)
+        self.attempted_words.append(guess)
+        self.attempts_count += 1
+
+        if all(letter['status'] == LetterStatus.CORRECT for letter in result):
+            self.game_won = True
+            
+        return result
+    
